@@ -3,8 +3,11 @@
 Este repositorio contiene el código fuente para el sistema de monitoreo basado en microservicios.
 
 ## Integrantes
+* Sara Sofía Lizarazo Barrera
+* Laura Daniela Vargas Acero
 * Anderson Benjamín Girón Villegas
-* Lucrecia Victoria Montes Pozo
+* Mendoza Vega Carlos Yair
+
 
 ## Arquitectura de Microservicios
 El sistema está compuesto por los siguientes servicios:
@@ -22,7 +25,7 @@ Aquí se observa la ejecución del servicio de usuarios y la creación de tablas
 
 ### Frontend
 El frontend se sirve de forma independiente para interactuar con los microservicios:
-![Vista del Dashboard](./screenshots/frontend_view.png)
+![alt text]({0AF92EC1-BF1C-4BFB-B0CB-71371499B193}.png)
 
 ## Cómo ejecutar el proyecto
 1. Clonar el repositorio.
