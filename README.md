@@ -21,17 +21,23 @@ El sistema está compuesto por los siguientes servicios:
 ## Vista Previa del Uso
 ### Backend y Microservicios
 Aquí se observa la ejecución del servicio de usuarios y la creación de tablas en la base de datos:
-1.
+
+* Alerts Service
 ![alt text]({DD77F915-7E8D-4CDC-BC31-1737716C3A42}.png)
-2.
+
+* Auth Service
 ![alt text]({D1BDCA37-8C79-4839-A81B-22E22EA5D266}.png)
-3.
+
+* Devices Service
 ![alt text]({9893A5AA-8A3B-4204-90AD-27877FD2CF30}.png)
-4.
+
+* Locations Service
 ![alt text]({A3120BE2-DC0C-4E9C-9A2E-56DCEC9E91B7}.png)
-5.
+
+* Metrics Service
 ![alt text]({BBE827E6-705D-4D89-990F-54C57ECA05B8}.png)
-6.
+
+* User Service
 ![alt text]({FEE3DE94-8CEB-414E-BFF7-620B72D9707B}.png)
 
 
