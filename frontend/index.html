@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>HSR Tunja — Acceso al Sistema</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --red:        #C8102E;
+      --red-deep:   #9B0C22;
+      --red-light:  #F5E6E8;
+      --navy:       #0D1B2A;
+      --navy-mid:   #1A2E45;
+      --slate:      #4A5E72;
+      --mist:       #EEF2F6;
+      --white:      #FFFFFF;
+      --border:     rgba(255,255,255,0.12);
+      --glass:      rgba(255,255,255,0.07);
+      --shadow:     0 32px 80px rgba(0,0,0,0.45);
+      --radius:     18px;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'DM Sans', sans-serif;
+      background: var(--navy);
+      overflow: hidden;
+    }
+
+    /* ── LAYOUT ── */
+    .page {
+      display: grid;
+      grid-template-columns: 1fr 480px;
+      height: 100vh;
+      position: relative;
+    }
+
+    /* ── LEFT PANEL — IMAGE ── */
+    .panel-image {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      filter: brightness(0.55) saturate(0.85);
+      transition: transform 8s ease;
+      animation: zoomSlow 12s ease-in-out infinite alternate;
+    }
+
+    @keyframes zoomSlow {
+      from { transform: scale(1); }
+      to   { transform: scale(1.06); }
+    }
+
+    .panel-image::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        135deg,
+        rgba(13,27,42,0.6) 0%,
+        rgba(200,16,46,0.18) 60%,
+        rgba(13,27,42,0.75) 100%
+      );
+    }
+
+    .panel-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 52px 56px;
+    }
+
+    .hospital-brand {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      animation: fadeDown 0.8s ease both;
+    }
+
+    .brand-cross {
+      width: 44px;
+      height: 44px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .brand-cross svg { width: 44px; height: 44px; }
+
+    .brand-text strong {
+      display: block;
+      font-family: 'DM Serif Display', serif;
+      font-size: 18px;
+      color: var(--white);
+      letter-spacing: 0.3px;
+      line-height: 1.2;
+    }
+
+    .brand-text span {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .panel-hero {
+      animation: fadeUp 1s 0.3s ease both;
+    }
+
+    .panel-hero h2 {
+      font-family: 'DM Serif Display', serif;
+      font-size: clamp(32px, 3.5vw, 52px);
+      color: var(--white);
+      line-height: 1.15;
+      margin-bottom: 18px;
+      text-shadow: 0 2px 20px rgba(0,0,0,0.4);
+    }
+
+    .panel-hero h2 em {
+      color: #FF6B7A;
+      font-style: italic;
+    }
+
+    .panel-hero p {
+      font-size: 15px;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.7;
+      max-width: 420px;
+    }
+
+    .panel-stats {
+      display: flex;
+      gap: 28px;
+      margin-top: 36px;
+      animation: fadeUp 1s 0.5s ease both;
+    }
+
+    .stat-pill {
+      background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 50px;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .stat-pill svg { color: #FF6B7A; }
+
+    .stat-pill strong {
+      font-size: 15px;
+      color: var(--white);
+      font-weight: 600;
+    }
+
+    .stat-pill span {
+      font-size: 12px;
+      color: rgba(255,255,255,0.55);
+    }
+
+    /* ── RIGHT PANEL — LOGIN ── */
+    .panel-login {
+      background: var(--navy-mid);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 52px 52px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .panel-login::before {
+      content: '';
+      position: absolute;
+      top: -120px;
+      right: -120px;
+      width: 340px;
+      height: 340px;
+      background: radial-gradient(circle, rgba(200,16,46,0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .panel-login::after {
+      content: '';
+      position: absolute;
+      bottom: -80px;
+      left: -80px;
+      width: 240px;
+      height: 240px;
+      background: radial-gradient(circle, rgba(200,16,46,0.08) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .login-content {
+      position: relative;
+      z-index: 1;
+      animation: fadeUp 0.9s 0.2s ease both;
+    }
+
+    .login-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 32px;
+    }
+
+    .eyebrow-line {
+      height: 2px;
+      width: 28px;
+      background: var(--red);
+      border-radius: 2px;
+    }
+
+    .eyebrow-text {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--red);
+    }
+
+    .login-content h1 {
+      font-family: 'DM Serif Display', serif;
+      font-size: 34px;
+      color: var(--white);
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .login-content .subtitle {
+      font-size: 14px;
+      color: rgba(255,255,255,0.45);
+      margin-bottom: 42px;
+      font-weight: 300;
+    }
+
+    /* ── FORM ── */
+    .form-group {
+      margin-bottom: 22px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255,255,255,0.5);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    .input-wrap {
+      position: relative;
+    }
+
+    .input-wrap svg.input-icon {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: rgba(255,255,255,0.3);
+      pointer-events: none;
+      transition: color 0.2s;
+      width: 18px;
+      height: 18px;
+    }
+
+    .input-wrap input {
+      width: 100%;
+      background: rgba(255,255,255,0.06);
+      border: 1.5px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      padding: 14px 16px 14px 46px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      color: var(--white);
+      outline: none;
+      transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+    }
+
+    .input-wrap input::placeholder { color: rgba(255,255,255,0.22); }
+
+    .input-wrap input:focus {
+      border-color: var(--red);
+      background: rgba(200,16,46,0.06);
+      box-shadow: 0 0 0 4px rgba(200,16,46,0.12);
+    }
+
+    .input-wrap input:focus + svg.input-icon,
+    .input-wrap:focus-within svg.input-icon {
+      color: var(--red);
+    }
+
+    .btn-eye {
+      position: absolute;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: rgba(255,255,255,0.3);
+      padding: 4px;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+    }
+
+    .btn-eye:hover { color: rgba(255,255,255,0.7); }
+    .btn-eye svg { width: 18px; height: 18px; }
+
+    /* Password field has eye button, shift icon */
+    .has-eye input { padding-right: 46px; }
+
+    .alert-error {
+      background: rgba(200,16,46,0.12);
+      border: 1px solid rgba(200,16,46,0.35);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 13px;
+      color: #FF8090;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      animation: shake 0.4s ease;
+    }
+
+    @keyframes shake {
+      0%,100% { transform: translateX(0); }
+      25%      { transform: translateX(-6px); }
+      75%      { transform: translateX(6px); }
+    }
+
+    .hidden { display: none !important; }
+
+    .btn-submit {
+      width: 100%;
+      padding: 16px;
+      background: var(--red);
+      border: none;
+      border-radius: 12px;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--white);
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+      margin-top: 8px;
+    }
+
+    .btn-submit::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.15) 0%, transparent 60%);
+      opacity: 0;
+      transition: opacity 0.2s;
+    }
+
+    .btn-submit:hover {
+      background: var(--red-deep);
+      box-shadow: 0 8px 32px rgba(200,16,46,0.45);
+      transform: translateY(-1px);
+    }
+
+    .btn-submit:hover::before { opacity: 1; }
+    .btn-submit:active { transform: translateY(0); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .btn-inner {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    /* Spinner */
+    .spinner {
+      width: 18px;
+      height: 18px;
+      border: 2px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Hint */
+    .login-hint {
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .hint-badge {
+      background: rgba(200,16,46,0.15);
+      border: 1px solid rgba(200,16,46,0.3);
+      border-radius: 8px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #FF8090;
+      font-family: monospace;
+      letter-spacing: 0.5px;
+    }
+
+    .hint-text {
+      font-size: 12px;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 900px) {
+      .page { grid-template-columns: 1fr; }
+      .panel-image { display: none; }
+      .panel-login { padding: 48px 32px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <!-- LEFT: HOSPITAL IMAGE -->
+  <div class="panel-image">
+    <img src="https://boyaca7dias.com.co/wp-content/uploads/2026/01/HospitalSanRafael.jpg"
+         alt="Hospital Universitario San Rafael de Tunja"
+         onerror="this.src='https://images.unsplash.com/photo-1586773860418-d37222d8fce3?w=1200&q=80'"/>
+    <div class="panel-overlay">
+      <div class="hospital-brand">
+        <div class="brand-cross">
+          <svg viewBox="0 0 44 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="17" y="4" width="10" height="36" rx="3" fill="white"/>
+            <rect x="4" y="17" width="36" height="10" rx="3" fill="white"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <strong>Hospital San Rafael</strong>
+          <span>Universitario · Tunja</span>
+        </div>
+      </div>
+
+      <div class="panel-hero">
+        <h2>Infraestructura<br>bajo <em>control</em><br>las 24 horas.</h2>
+        <p>Sistema centralizado de monitoreo para equipos, redes y dispositivos críticos del hospital.</p>
+        <div class="panel-stats">
+          <div class="stat-pill">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M20 3H4a1 1 0 00-1 1v13a1 1 0 001 1h7v2H8v2h8v-2h-3v-2h7a1 1 0 001-1V4a1 1 0 00-1-1zm-1 13H5V5h14v11z"/></svg>
+            <div>
+              <strong>24/7</strong>
+              <span>Monitoreo</span>
+            </div>
+          </div>
+          <div class="stat-pill">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 4l5 2.18V11c0 3.5-2.33 6.79-5 7.93C9.33 17.79 7 14.5 7 11V7.18L12 5z"/></svg>
+            <div>
+              <strong>ESE</strong>
+              <span>Certificado</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: LOGIN -->
+  <div class="panel-login">
+    <div class="login-content">
+
+      <div class="login-eyebrow">
+        <div class="eyebrow-line"></div>
+        <span class="eyebrow-text">Portal TI</span>
+      </div>
+
+      <h1>Bienvenido<br>de nuevo</h1>
+      <p class="subtitle">Ingrese sus credenciales para acceder al panel de monitoreo.</p>
+
+      <div class="form-group">
+        <label for="username">Usuario</label>
+        <div class="input-wrap">
+          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"/>
+          </svg>
+          <input type="text" id="username" placeholder="Ingrese su usuario" required autocomplete="username"/>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="password">Contraseña</label>
+        <div class="input-wrap has-eye">
+          <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1 1.71 0 3.1 1.39 3.1 3.1v2z"/>
+          </svg>
+          <input type="password" id="password" placeholder="••••••••" required autocomplete="current-password"/>
+          <button type="button" class="btn-eye" id="togglePwd" aria-label="Mostrar contraseña">
+            <svg id="eyeIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div id="loginError" class="alert-error hidden">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+        <span id="loginErrorMsg">Credenciales incorrectas.</span>
+      </div>
+
+      <button class="btn-submit" id="loginBtn" onclick="handleLogin()">
+        <div class="btn-inner">
+          <span id="loginText">Iniciar Sesión</span>
+          <div id="loginSpinner" class="spinner hidden"></div>
+        </div>
+      </button>
+
+      <div class="login-hint">
+        <span class="hint-badge"></span>
+        <span class="hint-text"></span>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+<script>
+  document.getElementById('togglePwd').addEventListener('click', () => {
+    const p = document.getElementById('password');
+    p.type = p.type === 'password' ? 'text' : 'password';
+  });
+
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') handleLogin(); });
+
+  async function handleLogin() {
+    const btn     = document.getElementById('loginBtn');
+    const text    = document.getElementById('loginText');
+    const spinner = document.getElementById('loginSpinner');
+    const error   = document.getElementById('loginError');
+    const msg     = document.getElementById('loginErrorMsg');
+
+    const username = document.getElementById('username').value.trim();
+    const password = document.getElementById('password').value;
+
+    if (!username || !password) {
+      msg.textContent = 'Ingrese usuario y contraseña.';
+      error.classList.remove('hidden'); return;
+    }
+
+    btn.disabled = true;
+    text.classList.add('hidden');
+    spinner.classList.remove('hidden');
+    error.classList.add('hidden');
+
+    const result = await doLogin(username, password);
+
+    if (result.ok) {
+      location.href = 'dashboard.html';
+    } else {
+      msg.textContent = result.message;
+      error.classList.remove('hidden');
+      btn.disabled = false;
+      text.classList.remove('hidden');
+      spinner.classList.add('hidden');
+    }
+  }
+</script>
+</body>
+</html>
